@@ -69,7 +69,6 @@ const render = () => {
       const inputTask = document.createElement("input");
       inputTask.type = "text";
       inputTask.value = item.text;
-      inputTask.className = "input-task";
       inputTask.addEventListener("input", (e) => updateTaskText(e));
       inputTask.addEventListener("onclick", () => doneEditTask(index));
       container.appendChild(inputTask);
@@ -77,7 +76,7 @@ const render = () => {
       const imageCancel = document.createElement("img");
       imageDone.src = "imgs/Goto.png";
       imageCancel.src = "imgs/close.png";
-      imageCancel.onclick = () => cancelEditTask();
+      imageCancel.onclick = () => cancelEditTask(index);
       imageDone.onclick = () => doneEditTask(index);
       container.appendChild(imageDone);
       container.appendChild(imageCancel);
@@ -157,6 +156,7 @@ const doneEditTask = async () => {
 };
 
 const cancelEditTask = async () => {
-  allTasks[activeEditTask].text = null;
+  
+  activeEditTask = null;
   render();
 }
