@@ -1,26 +1,20 @@
-body {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-
 .first {
-  border: 1px solid rgb(67, 101, 253);
-  border-radius: 10px;
+  outline: 2px solid rgb(67, 101, 253);
+  border-radius: 8px;
   width: 50%;
   margin: auto;
   height: 500px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .first::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
   background-color: #f9f9fd;
 }
 
 .first::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: rgb(67, 101, 253);
+  background-color: rgba(67, 101, 253, 0.521);
 }
 
 .main {
@@ -131,13 +125,13 @@ img {
   color: rgb(67, 101, 253);
 }
 
-@media (max-width: 912px) {
+@media (max-width: 989px) {
   .first {
     border: 1px solid rgb(67, 101, 253);
     border-radius: 10px;
-    width: 77%;
+    width: 50%;
     margin: auto;
-    height: 1000px;
+
     overflow-y: scroll;
-  }
+}
 }

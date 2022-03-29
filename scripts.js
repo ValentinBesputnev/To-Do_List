@@ -1,7 +1,7 @@
 let allTasks = [];
 let valueInput = "";
 let input = null;
-let activeEditTask = null;
+let activeEditTask = {index: null, text: null};
 
 window.onload = async function init() {
   input = document.getElementById("add-task");
@@ -42,9 +42,7 @@ const onClickButton = async () => {
   render();
 };
 
-const updateValue = (event) => {
-  valueInput = event.target.value;
-};
+const updateValue = (event) => valueInput = event.target.value;
 
 const render = () => {
   const content = document.getElementById("content-page");
@@ -65,7 +63,7 @@ const render = () => {
     checkbox.onchange = () => onChangeCheckbox(index);
     container.appendChild(checkbox);
 
-    if (index === activeEditTask) {
+    if (index === activeEditTask.index) {
       const inputTask = document.createElement("input");
       inputTask.type = "text";
       inputTask.value = item.text;
@@ -89,7 +87,7 @@ const render = () => {
       imageEdit.className = item.isCheck ? "imageEdit-disable" : "imageEdit";
       imageEdit.src = "imgs/edit.png";
       imageEdit.onclick = () => {
-        activeEditTask = index;
+        activeEditTask = {index: index, text: allTasks[index].text };
         render();
       };
       container.appendChild(text);
@@ -135,28 +133,35 @@ const onDeleteTask = async (index) => {
   render();
 };
 
-const updateTaskText = async (event) => {
-  allTasks[activeEditTask].text = event.target.value;
+const updateTaskText = (event) => {
+  activeEditTask.text = event.target.value;
 };
 
-const doneEditTask = async () => {
-  if (allTasks[activeEditTask].text.trim()) {
-    await fetch("http://localhost:8000/updateTask", {
+const doneEditTask = async (index) => {
+  if (activeEditTask.text) {
+    let id = allTasks[index]._id;
+    const response = await fetch("http://localhost:8000/updateTask", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(allTasks[activeEditTask]),
+      body: JSON.stringify({
+        _id: id,
+        text: activeEditTask.text,
+        isCheck:allTasks[index].isCheck
+      })
     });
-    activeEditTask = null;
-    render();
-  } else {
-    alert("Task must not be empty");
-  }
+    const result = await response.json();
+    allTasks = result;
+    activeEditTask = {index: null, text: null};
+    render()
+  }else {
+     alert("Task must not be empty");
+   }
 };
 
-const cancelEditTask = async () => {
-  allTasks[activeEditTask].text = null;
-  render();
+const cancelEditTask = () => {
+  activeEditTask = {index: null, text: null};
+    render();
 }
