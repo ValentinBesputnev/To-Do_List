@@ -9,7 +9,6 @@
 
 .first::-webkit-scrollbar {
   width: 10px;
-  background-color: #f9f9fd;
 }
 
 .first::-webkit-scrollbar-thumb {
@@ -105,7 +104,7 @@ img {
   width: 20px;
   height: 20px;
   margin: auto 0 auto 15px;
-  float: right;
+  /* float: right; */
 }
 
 .doneBut {
@@ -133,5 +132,5 @@ img {
     margin: auto;
 
     overflow-y: scroll;
-}
+  }
 }

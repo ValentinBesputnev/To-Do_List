@@ -1,12 +1,12 @@
 let allTasks = [];
 let valueInput = "";
 let input = null;
-let activeEditTask = {index: null, text: null};
+let activeEditTask = { index: null, text: null };
 
-window.onload = async function init() {
+window.onload = init = async () => {
   input = document.getElementById("add-task");
   input.addEventListener("change", updateValue);
-  const response = await fetch("http://localhost:8000/allTasks", {
+  const response = await fetch("http://localhost:3000/allTasks", {
     method: "GET",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -20,7 +20,7 @@ window.onload = async function init() {
 
 const onClickButton = async () => {
   if (valueInput.trim() != "") {
-    const response = await fetch("http://localhost:8000/createTask", {
+    const response = await fetch("http://localhost:3000/createTask", {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
@@ -32,7 +32,6 @@ const onClickButton = async () => {
       }),
     });
     const result = await response.json();
-
     allTasks = result;
   } else {
     alert("Oops. You have not entered a task.");
@@ -42,7 +41,7 @@ const onClickButton = async () => {
   render();
 };
 
-const updateValue = (event) => valueInput = event.target.value;
+const updateValue = (event) => (valueInput = event.target.value);
 
 const render = () => {
   const content = document.getElementById("content-page");
@@ -87,7 +86,7 @@ const render = () => {
       imageEdit.className = item.isCheck ? "imageEdit-disable" : "imageEdit";
       imageEdit.src = "imgs/edit.png";
       imageEdit.onclick = () => {
-        activeEditTask = {index: index, text: allTasks[index].text };
+        activeEditTask = { index: index, text: allTasks[index].text };
         render();
       };
       container.appendChild(text);
@@ -104,7 +103,7 @@ const render = () => {
 
 const onChangeCheckbox = async (index) => {
   allTasks[index].isCheck = !allTasks[index].isCheck;
-  const response = await fetch("http://localhost:8000/updateTask", {
+  const response = await fetch("http://localhost:3000/updateTask", {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -119,7 +118,7 @@ const onChangeCheckbox = async (index) => {
 
 const onDeleteTask = async (index) => {
   const response = await fetch(
-    `http://localhost:8000/deleteTask?id=${allTasks[index]._id}`,
+    `http://localhost:3000/deleteTask?id=${allTasks[index]._id}`,
     {
       method: "DELETE",
       headers: {
@@ -140,7 +139,7 @@ const updateTaskText = (event) => {
 const doneEditTask = async (index) => {
   if (activeEditTask.text) {
     let id = allTasks[index]._id;
-    const response = await fetch("http://localhost:8000/updateTask", {
+    const response = await fetch("http://localhost:3000/updateTask", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
@@ -149,19 +148,19 @@ const doneEditTask = async (index) => {
       body: JSON.stringify({
         _id: id,
         text: activeEditTask.text,
-        isCheck:allTasks[index].isCheck
-      })
+        isCheck: allTasks[index].isCheck,
+      }),
     });
     const result = await response.json();
     allTasks = result;
-    activeEditTask = {index: null, text: null};
-    render()
-  }else {
-     alert("Task must not be empty");
-   }
+    activeEditTask = { index: null, text: null };
+    render();
+  } else {
+    alert("Task must not be empty");
+  }
 };
 
 const cancelEditTask = () => {
-  activeEditTask = {index: null, text: null};
-    render();
-}
+  activeEditTask = { index: null, text: null };
+  render();
+};
