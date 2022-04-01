@@ -61,21 +61,20 @@ const render = () => {
     checkbox.checked = item.isCheck;
     checkbox.onchange = () => onChangeCheckbox(index);
     container.appendChild(checkbox);
-
     if (index === activeEditTask.index) {
       const inputTask = document.createElement("input");
       inputTask.type = "text";
       inputTask.value = item.text;
       inputTask.className = "input-task";
       inputTask.addEventListener("input", (e) => updateTaskText(e));
-      inputTask.addEventListener("onclick", () => doneEditTask(index));
+      inputTask.addEventListener("onclick", () => doneEditTask());
       container.appendChild(inputTask);
       const imageDone = document.createElement("img");
       const imageCancel = document.createElement("img");
       imageDone.src = "imgs/Goto.png";
       imageCancel.src = "imgs/close.png";
       imageCancel.onclick = () => cancelEditTask();
-      imageDone.onclick = () => doneEditTask(index);
+      imageDone.onclick = () => doneEditTask();
       container.appendChild(imageDone);
       container.appendChild(imageCancel);
     } else {
@@ -136,9 +135,10 @@ const updateTaskText = (event) => {
   activeEditTask.text = event.target.value;
 };
 
-const doneEditTask = async (index) => {
+const doneEditTask = async () => {
   if (activeEditTask.text) {
-    let id = allTasks[index]._id;
+    let [ind] = allTasks
+    let id = ind._id;
     const response = await fetch("http://localhost:3000/updateTask", {
       method: "PATCH",
       headers: {
@@ -148,7 +148,7 @@ const doneEditTask = async (index) => {
       body: JSON.stringify({
         _id: id,
         text: activeEditTask.text,
-        isCheck: allTasks[index].isCheck,
+        isCheck: ind.isCheck,
       }),
     });
     const result = await response.json();
