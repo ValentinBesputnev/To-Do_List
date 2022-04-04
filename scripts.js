@@ -14,7 +14,7 @@ window.onload = init = async () => {
     },
   });
   const result = await response.json();
-  allTasks = result;
+  allTasks = result.data;
   render();
 };
 
@@ -32,7 +32,7 @@ const onClickButton = async () => {
       }),
     });
     const result = await response.json();
-    allTasks = result;
+    allTasks = result.data;
   } else {
     alert("Oops. You have not entered a task.");
   }
@@ -67,14 +67,14 @@ const render = () => {
       inputTask.value = item.text;
       inputTask.className = "input-task";
       inputTask.addEventListener("input", (e) => updateTaskText(e));
-      inputTask.addEventListener("onclick", () => doneEditTask());
+      inputTask.addEventListener("onclick", () => doneEditTask(index));
       container.appendChild(inputTask);
       const imageDone = document.createElement("img");
       const imageCancel = document.createElement("img");
       imageDone.src = "imgs/Goto.png";
       imageCancel.src = "imgs/close.png";
       imageCancel.onclick = () => cancelEditTask();
-      imageDone.onclick = () => doneEditTask();
+      imageDone.onclick = () => doneEditTask(index);
       container.appendChild(imageDone);
       container.appendChild(imageCancel);
     } else {
@@ -111,13 +111,13 @@ const onChangeCheckbox = async (index) => {
     body: JSON.stringify(allTasks[index]),
   });
   const result = await response.json();
-  allTasks = result;
+  allTasks = result.data;
   render();
 };
 
 const onDeleteTask = async (index) => {
   const response = await fetch(
-    `http://localhost:3000/deleteTask?id=${allTasks[index]._id}`,
+    `http://localhost:3000/deleteTask?_id=${allTasks[index]._id}`,
     {
       method: "DELETE",
       headers: {
@@ -127,7 +127,7 @@ const onDeleteTask = async (index) => {
     }
   );
   const result = await response.json();
-  allTasks = result;
+  allTasks = result.data;
   render();
 };
 
@@ -135,10 +135,10 @@ const updateTaskText = (event) => {
   activeEditTask.text = event.target.value;
 };
 
-const doneEditTask = async () => {
+const doneEditTask = async (index) => {
   if (activeEditTask.text) {
-    let [ind] = allTasks
-    let id = ind._id;
+    allTasks[index].text = activeEditTask.text;
+    let _id = allTasks[index]._id;
     const response = await fetch("http://localhost:3000/updateTask", {
       method: "PATCH",
       headers: {
@@ -146,13 +146,12 @@ const doneEditTask = async () => {
         "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
-        _id: id,
+        _id,
         text: activeEditTask.text,
-        isCheck: ind.isCheck,
       }),
     });
     const result = await response.json();
-    allTasks = result;
+    allTasks = result.data;
     activeEditTask = { index: null, text: null };
     render();
   } else {
